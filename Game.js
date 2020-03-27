@@ -1,5 +1,6 @@
 
-export default class Game {
+// export default
+class Game {
     constructor(board, player1Turn, gameOver) {
         this.board = board;
         this.player1Turn = player1Turn;
@@ -75,7 +76,7 @@ export default class Game {
         //     return !this.board.isColumnOpen(idx);
         // });
         for (let i = 0; i < this.board.length; i++) {
-            if (this.board.isColumnOpen(i)) return false;
+            if (this.isColumnOpen(i)) return false;
         }
         return true;
     }
@@ -149,30 +150,28 @@ export default class Game {
 
     }
 }
-// module.exports = Game;
 
 
+// const stringTieArr = [['0', '1', '1', '1', '0', '0'],
+// ['0', '1', '0', '0', '1', '0'],
+// ['0', '1', '1', '0', '1', '0'],
+// ['1', '0', '0', '1', '1', '1'],
 
+// ['0', '0', '1', '1', '0', '0'],
+// ['1', '0', '0', '1', '0', '0'],
+// ['1', '1', '0', '0', '1', '1']]
 
-// const game = new Game(board, true, false);
-
-// // game.playerMove(6, 0);
-// // game.playerMove(1, 1);
-// // game.playerMove(2, 1);
-// // game.playerMove(5, 0);
-// // game.playerMove(6, 1);
-// // game.playerMove(2, 0);
-// // game.playerMove(3, 1);
-// // game.playerMove(4, 1);
-// // game.playerMove(6, 1);
-// // game.playerMove(6, 1);
-
-// game.board[0][0] = 1
-// game.board[1][1] = 1
-// game.board[2][2] = 1
-// game.board[3][0] = 1
-
-
-// game.checkWinnerDiagonal();
-// console.table(game.board);
-// console.log("is game over:", game.gameOver)
+// const tieArr = [];
+// for (let i = 0; i < stringTieArr.length; i++) {
+//     const strCol = stringTieArr[i];
+//     const col = [];
+//     for (let j = 0; j < strCol.length; j++) {
+//         const num = Number(strCol[j]);
+//         col.push(num);
+//     }
+//     tieArr.push(col);
+// }
+// console.table(tieArr)
+// const tie = new Game(tieArr, true, false);
+// tie.checkWinner();
+// console.log(tie.gameOver, tie.winner);

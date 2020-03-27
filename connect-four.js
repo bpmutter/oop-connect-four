@@ -1,18 +1,7 @@
 import Game from './Game.js';
+import Player from './Player.js';
 
 const game = new Game();
-class Player {
-    constructor(name, id, color) {
-        this.name = name;
-        this.id = id;
-        this.color = color;
-    }
-    move(columnNumber) {
-        game.playerMove(columnNumber, this.id);
-        game.changePlayerTurn();
-    }
-}
-
 const player1 = new Player("player 1", 1, "red");
 const player2 = new Player("player 2", 0, "black");
 
@@ -43,9 +32,9 @@ window.addEventListener("DOMContentLoaded", () => {
         const colNum = colId[colId.length - 1];
         if (game.isColumnOpen(colNum) && !game.isGameOver()) {
             if (game.isPlayerOneTurn() === true) {
-                player1.move(colNum);
+                player1.move(game, colNum);
             } else {
-                player2.move(colNum);
+                player2.move(game, colNum);
             }
             game.checkWinner();
             renderGameStatus(game.board);
@@ -87,8 +76,8 @@ function renderGameStatus(gameBoard) {
     gameSquares.forEach(function (square) {
         const squareId = square.id.toString();
 
-        const squareCol = squareId[9];
-        const squareRow = squareId[7];
+        const squareCol = squareId[9]; //get column from square ID in HTML
+        const squareRow = squareId[7]; //get row from square ID in HTML
         const boardValue = game.getSquareValue(squareCol, squareRow);
         if (boardValue === player1.id) {
             square.classList.add('token');

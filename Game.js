@@ -6,7 +6,7 @@ export default class Game {
         this.gameOver = gameOver;
         this.winner = null;
     }
-    createBoard() {
+    static createBoard() {
         const board = [];
         for (let i = 0; i < 7; i++) {
             const column = [];
@@ -19,7 +19,7 @@ export default class Game {
     }
 
     newGame() {
-        this.board = this.createBoard();
+        this.board = Game.createBoard();
         this.player1Turn = true;
         this.gameOver = false;
         this.winner = null;
@@ -29,7 +29,6 @@ export default class Game {
     playerMove(columnNumber, playerValue) {
         const col = this.board[columnNumber]
         for (let i = col.length - 1; i >= 0; i--) {
-            const gameSpace = col[i];
             if (col[i] === '') {
                 return col[i] = playerValue;
             }
@@ -69,10 +68,6 @@ export default class Game {
         }
     }
     isBoardFull() {
-        // return this.board.every(function (col, idx) {
-        //     console.log(idx);
-        //     return !this.board.isColumnOpen(idx);
-        // });
         for (let i = 0; i < this.board.length; i++) {
             if (this.isColumnOpen(i)) return false;
         }
@@ -91,11 +86,6 @@ export default class Game {
                 const col = this.board[i];
                 if (col[j] !== '' && col[j] === col[j + 1] && col[j] === col[j + 2] && col[j] === col[j + 3]) {
                     this.winner = col[j];
-                    // console.log(`the winning spaces are:
-                    //     [${i}][${j}],
-                    //     [${i}][${j + 1}],
-                    //     [${i}][${j + 2}],
-                    //     [${i}][${j + 3}]`);
                     return true;
                 }
             }
@@ -110,11 +100,6 @@ export default class Game {
                     this.board[j][i] === this.board[j + 2][i] &&
                     this.board[j][i] === this.board[j + 3][i]) {
                     this.winner = this.board[j][i];
-                    // console.log(`the winning spaces are:
-                    // [${j}][${i}],
-                    // [${j + 1}][${i}]
-                    // [${j + 2}][${i}]
-                    // [${j + 3}][${i}]`);
                     return true;
                 }
             }
@@ -148,28 +133,3 @@ export default class Game {
 
     }
 }
-
-
-// const stringTieArr = [['0', '1', '1', '1', '0', '0'],
-// ['0', '1', '0', '0', '1', '0'],
-// ['0', '1', '1', '0', '1', '0'],
-// ['1', '0', '0', '1', '1', '1'],
-
-// ['0', '0', '1', '1', '0', '0'],
-// ['1', '0', '0', '1', '0', '0'],
-// ['1', '1', '0', '0', '1', '1']]
-
-// const tieArr = [];
-// for (let i = 0; i < stringTieArr.length; i++) {
-//     const strCol = stringTieArr[i];
-//     const col = [];
-//     for (let j = 0; j < strCol.length; j++) {
-//         const num = Number(strCol[j]);
-//         col.push(num);
-//     }
-//     tieArr.push(col);
-// }
-// console.table(tieArr)
-// const tie = new Game(tieArr, true, false);
-// tie.checkWinner();
-// console.log(tie.gameOver, tie.winner);

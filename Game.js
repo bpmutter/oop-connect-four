@@ -1,6 +1,5 @@
 
-// export default
-class Game {
+export default class Game {
     constructor(board, player1Turn, gameOver) {
         this.board = board;
         this.player1Turn = player1Turn;
@@ -69,7 +68,6 @@ class Game {
             return this.gameOver = true;
         }
     }
-
     isBoardFull() {
         // return this.board.every(function (col, idx) {
         //     console.log(idx);

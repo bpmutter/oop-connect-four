@@ -1,8 +1,6 @@
 import Game from './Game.js';
 
 const game = new Game();
-game.newGame();
-
 class Player {
     constructor(name, id, color) {
         this.name = name;
@@ -19,8 +17,18 @@ const player1 = new Player("player 1", 1, "red");
 const player2 = new Player("player 2", 0, "black");
 
 window.addEventListener("DOMContentLoaded", () => {
+    const formHolder = document.getElementById("form-holder");
+    formHolder.addEventListener("keyup", checkDisabledStartButton);
+
+    const playButton = document.getElementById("new-game");
+    playButton.addEventListener('click', (e) => {
+        startNewGame();
+        console.log(game.board);
+
+    });
     const columns = document.getElementById("click-targets");
     columns.addEventListener("click", (event) => {
+        if (!game.board) return;
         if (event.target === columns) {
             return;
         }
@@ -39,7 +47,31 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
+
+
 });
+
+function startNewGame() {
+    clearGameWinner();
+    clearGameBoard();
+    const player1Name = document.getElementById("player-1-name");
+    const player2Name = document.getElementById("player-2-name");
+    player1.name = player1Name.value;
+    player2.name = player2Name.value;
+    game.newGame();
+    renderGameStatus(game.board);
+}
+
+function checkDisabledStartButton() {
+    const player1Name = document.getElementById("player-1-name");
+    const player2Name = document.getElementById("player-2-name");
+    const playButton = document.getElementById("new-game");
+    if (player1Name.value !== "" && player2Name.value !== "") {
+        playButton.disabled = false;
+    } else {
+        playButton.disabled = true;
+    }
+}
 
 function renderGameStatus(gameBoard) {
     const gameSquares = document.querySelectorAll('.token-square');
@@ -59,6 +91,15 @@ function renderGameStatus(gameBoard) {
     });
 }
 
+function clearGameBoard() {
+    const gameSquares = document.querySelectorAll('.token-square');
+    gameSquares.forEach(function (square) {
+        square.classList.remove('token');
+        square.classList.remove(player1.color);
+        square.classList.remove(player2.color);
+    })
+}
+
 function renderWinner() {
     const gameWinner = document.getElementById("game-winner");
     if (game.winner === null) {
@@ -68,4 +109,9 @@ function renderWinner() {
     } else {
         gameWinner.innerHTML = `The winner is ${player2.name}`;
     }
+}
+
+function clearGameWinner() {
+    const gameWinner = document.getElementById("game-winner");
+    gameWinner.innerHTML = '';
 }

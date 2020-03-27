@@ -17,6 +17,13 @@ const player1 = new Player("player 1", 1, "red");
 const player2 = new Player("player 2", 0, "black");
 
 window.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem('isLocalStorageActive')) {
+        getLocalStorage();
+        renderGameStatus();
+        checkDisabledStartButton();
+        renderWinner();
+    }
+
     const formHolder = document.getElementById("form-holder");
     formHolder.addEventListener("keyup", checkDisabledStartButton);
 
@@ -46,6 +53,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 renderWinner();
             }
         }
+        saveToLocalStorage();
     });
 
 
@@ -60,6 +68,7 @@ function startNewGame() {
     player2.name = player2Name.value;
     game.newGame();
     renderGameStatus(game.board);
+    saveToLocalStorage();
 }
 
 function checkDisabledStartButton() {
@@ -89,6 +98,12 @@ function renderGameStatus(gameBoard) {
             square.classList.add(player2.color);
         }
     });
+    const player1Name = document.getElementById("player-1-name");
+    const player2Name = document.getElementById("player-2-name");
+    player1Name.value = player1.name;
+    player2Name.value = player2.name;
+
+
 }
 
 function clearGameBoard() {
@@ -102,16 +117,40 @@ function clearGameBoard() {
 
 function renderWinner() {
     const gameWinner = document.getElementById("game-winner");
-    if (game.winner === null) {
-        gameWinner.innerHTML = "The game is a tie!";
-    } else if (game.winner === player1.id) {
-        gameWinner.innerHTML = `The winner is ${player1.name}`;
-    } else {
-        gameWinner.innerHTML = `The winner is ${player2.name}`;
+    if (game.isGameOver()) {
+        if (game.winner === null) {
+            gameWinner.innerHTML = "The game is a tie!";
+        } else if (game.winner === player1.id) {
+            gameWinner.innerHTML = `The winner is ${player1.name}`;
+        } else {
+            gameWinner.innerHTML = `The winner is ${player2.name}`;
+        }
     }
+
 }
 
 function clearGameWinner() {
     const gameWinner = document.getElementById("game-winner");
     gameWinner.innerHTML = '';
+}
+
+function saveToLocalStorage() {
+
+    const boardString = JSON.stringify(game.board);
+    localStorage.setItem('isLocalStorageActive', true);
+    localStorage.setItem("board", boardString);
+    localStorage.setItem("player1Turn", game.player1Turn);
+    localStorage.setItem("gameOver", game.gameOver);
+    localStorage.setItem("winner", game.winner);
+    localStorage.setItem("player1Name", player1.name);
+    localStorage.setItem("player2Name", player2.name);
+}
+
+function getLocalStorage() {
+    game.board = JSON.parse(localStorage.getItem("board"));
+    game.player1Turn = JSON.parse(localStorage.getItem("player1Turn"));
+    game.gameOver = JSON.parse(localStorage.getItem("gameOver"));
+    game.Winner = JSON.parse(localStorage.getItem("winner"));
+    player1.name = localStorage.getItem("player1Name");
+    player2.name = localStorage.getItem("player2Name");
 }

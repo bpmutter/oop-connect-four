@@ -92,6 +92,21 @@ function renderGameStatus(gameBoard) {
     player1Name.value = player1.name;
     player2Name.value = player2.name;
 
+    const clickTargets = document.querySelectorAll(".click-target");
+
+    if (game.isPlayerOneTurn()) {
+        clickTargets.forEach(target => {
+            target.classList.remove("black-click-target");
+            target.classList.add("red-click-target");
+        });
+    } else {
+        clickTargets.forEach(target => {
+            target.classList.remove("red-click-target");
+            target.classList.add("black-click-target");
+
+        });
+    }
+
 
 }
 

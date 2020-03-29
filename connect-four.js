@@ -1,62 +1,44 @@
 import Game from './Game.js';
 import Player from './Player.js';
+import GameUI from './ui.js';
 
 const game = new Game();
 const player1 = new Player("player 1", 1, "red");
 const player2 = new Player("player 2", 0, "black");
+const ui = new GameUI(game,player1,player2);
 
 window.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem('isLocalStorageActive')) {
         getLocalStorage();
-        renderGameStatus();
+        ui.renderGameStatus();
         checkDisabledStartButton();
-        renderWinner();
+        ui.renderWinner();
     }
 
-    const formHolder = document.getElementById("form-holder");
-    formHolder.addEventListener("keyup", checkDisabledStartButton);
+    //checks if 2 player names before starting game
+    document.getElementById("form-holder")
+        .addEventListener("keyup", checkDisabledStartButton);
 
-    const playButton = document.getElementById("new-game");
-    playButton.addEventListener('click', (e) => {
-        startNewGame();
-        console.log(game.board);
+    //start new game on click of 'new game' button
+    document.getElementById("new-game")
+        .addEventListener('click', startNewGame);
 
-    });
-    const columns = document.getElementById("click-targets");
-    columns.addEventListener("click", (event) => {
-        if (!game.board) return;
-        if (event.target === columns) {
-            return;
-        }
-        const colId = event.target.id;
-        const colNum = colId[colId.length - 1];
-        if (game.isColumnOpen(colNum) && !game.isGameOver()) {
-            if (game.isPlayerOneTurn() === true) {
-                player1.move(game, colNum);
-            } else {
-                player2.move(game, colNum);
-            }
-            game.checkWinner();
-            renderGameStatus(game.board);
-            if (game.isGameOver()) {
-                renderWinner();
-            }
-        }
-        saveToLocalStorage();
-    });
+    //when player makes a move on one of the top squares
+    document.getElementById("click-targets")
+        .addEventListener("click", handlePlayerTurn);
 
 
 });
 
 function startNewGame() {
-    clearGameWinner();
-    clearGameBoard();
+    ui.clearGameWinner();
+    ui.clearGameBoard();
     const player1Name = document.getElementById("player-1-name");
     const player2Name = document.getElementById("player-2-name");
     player1.name = player1Name.value;
     player2.name = player2Name.value;
     game.newGame();
-    renderGameStatus(game.board);
+    ui.renderGameStatus();
     saveToLocalStorage();
 }
 
@@ -71,71 +53,29 @@ function checkDisabledStartButton() {
     }
 }
 
-function renderGameStatus(gameBoard) {
-    const gameSquares = document.querySelectorAll('.token-square');
-    gameSquares.forEach(function (square) {
-        const squareId = square.id.toString();
+function handlePlayerTurn(event){
+    const columns = document.getElementById("click-targets");
 
-        const squareCol = squareId[9]; //get column from square ID in HTML
-        const squareRow = squareId[7]; //get row from square ID in HTML
-        const boardValue = game.getSquareValue(squareCol, squareRow);
-        if (boardValue === player1.id) {
-            square.classList.add('token');
-            square.classList.add(player1.color);
-        } else if (boardValue === player2.id) {
-            square.classList.add('token');
-            square.classList.add(player2.color);
-        }
-    });
-    const player1Name = document.getElementById("player-1-name");
-    const player2Name = document.getElementById("player-2-name");
-    player1Name.value = player1.name;
-    player2Name.value = player2.name;
-
-    const clickTargets = document.querySelectorAll(".click-target");
-
-    if (game.isPlayerOneTurn()) {
-        clickTargets.forEach(target => {
-            target.classList.remove("black-click-target");
-            target.classList.add("red-click-target");
-        });
-    } else {
-        clickTargets.forEach(target => {
-            target.classList.remove("red-click-target");
-            target.classList.add("black-click-target");
-
-        });
+    if (!game.board) return;
+    if (event.target === columns) {
+        return;
     }
-
-
-}
-
-function clearGameBoard() {
-    const gameSquares = document.querySelectorAll('.token-square');
-    gameSquares.forEach(function (square) {
-        square.classList.remove('token');
-        square.classList.remove(player1.color);
-        square.classList.remove(player2.color);
-    })
-}
-
-function renderWinner() {
-    const gameWinner = document.getElementById("game-winner");
-    if (game.isGameOver()) {
-        if (game.winner === null) {
-            gameWinner.innerHTML = "The game is a tie!";
-        } else if (game.winner === player1.id) {
-            gameWinner.innerHTML = `The winner is ${player1.name}`;
+    const colId = event.target.id;
+    const colNum = colId[colId.length - 1];
+    if (game.isColumnOpen(colNum) && !game.isGameOver()) {
+        if (game.isPlayerOneTurn() === true) {
+            player1.move(game, colNum);
         } else {
-            gameWinner.innerHTML = `The winner is ${player2.name}`;
+            player2.move(game, colNum);
+        }
+        game.checkWinner();
+        ui.renderGameStatus(game.board);
+        if (game.isGameOver()) {
+            ui.renderWinner();
         }
     }
+    saveToLocalStorage();
 
-}
-
-function clearGameWinner() {
-    const gameWinner = document.getElementById("game-winner");
-    gameWinner.innerHTML = '';
 }
 
 function saveToLocalStorage() {
